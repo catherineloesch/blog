@@ -1,13 +1,12 @@
-class CommentsController < ApplicationController
-    def create
-      @article = Article.find(params[:article_id])
-      @comment = @article.comments.create(comment_params)
-      redirect_to article_path(@article)
-    end
+class Comment < ApplicationRecord
+    belongs_to :article
   
-    private
-      def comment_params
-        params.require(:comment).permit(:commenter, :body)
-      end
+    VALID_STATUSES = ['public', 'private', 'archived']
+  
+    validates :status, inclusion: { in: VALID_STATUSES }
+  
+    def archived?
+      status == 'archived'
+    end
   end
   
